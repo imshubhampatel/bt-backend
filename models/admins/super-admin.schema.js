@@ -11,15 +11,42 @@ const superAdminSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    contact: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
     email: {
       type: String,
+
       required: true,
       unique: true,
       lowercase: true,
     },
     otp: {
-      type: Number,
-      default: "",
+      type: String,
+      default: "000000",
+    },
+    encry_password: {
+      type: String,
+      required: true,
+    },
+    isLogin: {
+      type: Boolean,
+    },
+    lastLogin: {
+      type: Date,
+      default: Date.now,
+    },
+    accountStatus: {
+      type: Boolean,
+      default: true,
+    },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordTokenExpires: {
+      type: Date,
     },
     admin: [
       {
@@ -49,24 +76,22 @@ const superAdminSchema = new mongoose.Schema(
       type: String,
       enum: ["SubAdmin", "Admin", "User"],
     },
-    contact: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
-    encry_password: {
-      type: String,
-      required: true,
-    },
-    accountStatus: {
-      type: Boolean,
-      default: true,
-    },
   },
   {
     timestamps: true,
   }
 );
+
+//function to set lastLogin
+superAdminSchema.statics.newLogin = function login(id, callback) {
+  // ?
+  return this.findByIdAndUpdate(
+    id,
+    { $set: { lastLogin: Date.now() } },
+    { new: true },
+    callback
+  );
+};
 
 const SuperAdmin = mongoose.model("SuperAdmin", superAdminSchema);
 module.exports = SuperAdmin;

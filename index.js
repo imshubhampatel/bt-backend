@@ -20,6 +20,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //setting up passport
 app.use(passport.initialize());
 
+// app.use(function (err, req, res, next) {
+//   // set locals, only providing error in development
+//   console.log(err, err);
+//   res.status(err.status || 500);
+//   return res.json({
+//     // success: false,
+//     message: err.message ? err.message : err,
+//   });
+// });
+
 // ? setting up routes
 app.use("/", require("routes"));
 
