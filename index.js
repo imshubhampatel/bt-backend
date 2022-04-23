@@ -1,34 +1,28 @@
 require("dotenv").config();
 require("app-module-path").addPath(__dirname);
 const express = require("express");
+const app = express();
+const cors = require("cors");
 const mongoose = require("mongoose");
+const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const passport = require("passport");
+const passportJwt = require("./config/passport-jwt-strategy");
 const db = require("config/mongoose");
-const cors = require("cors");
-const app = express();
 //?
 
 app.use(cors());
-app.use(cookieParser());
 
 //? setting up bodyparser
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //setting up passport
 app.use(passport.initialize());
-
-// app.use(function (err, req, res, next) {
-//   // set locals, only providing error in development
-//   console.log(err, err);
-//   res.status(err.status || 500);
-//   return res.json({
-//     // success: false,
-//     message: err.message ? err.message : err,
-//   });
-// });
+app.use(session({ secret: "bla bla bla" }));
+app.use(passport.session({}));
 
 // ? setting up routes
 app.use("/", require("routes"));

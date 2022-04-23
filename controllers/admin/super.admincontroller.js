@@ -1,6 +1,17 @@
 const SuperAdmin = require("../../models/admins/super-admin.schema");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { sendMessage } = require("../../methods/sendMessage");
+
+module.exports.adminInfo = (req, res) => {
+  console.log(req.user);
+  return res.status(200).json({ success: true, data: { admin: "me" } });
+};
+
+module.exports.verifyOtp = (req, res) => {
+  console.log(req.body);
+  return res.status(200).json({ success: true, data: { admin: "me" } });
+};
 
 module.exports.signUp = async (req, res) => {
   const { name, userName, password, email, contact } = req.body;
@@ -23,9 +34,7 @@ module.exports.signUp = async (req, res) => {
       .json({ sucess: false, data: { message: "Admin Already Exits" } });
 
   try {
-    console.log("hey");
     let encry_password = await bcrypt.hashSync(password, 10);
-    console.log("hey");
     let superAdmin = await SuperAdmin.create({
       name,
       userName,
@@ -34,6 +43,17 @@ module.exports.signUp = async (req, res) => {
       contact,
     });
     console.log(superAdmin);
+    superAdmin.otp = 967764;
+    await superAdmin.save();
+    console.log(superAdmin);
+    let sendMail = sendMessage(
+      email,
+      "this is otp varification",
+      `<h3>OTP for account verification is </h3> <h1 style='font-weight:bold;'> 102903 </h1>`
+    );
+    if (sendMail && sendMail) {
+      console.log("yep");
+    }
     return res.status(201).json({
       sucess: true,
       data: { message: "super admin registered" },
@@ -94,12 +114,23 @@ module.exports.signIn = async (req, res) => {
       httpOnly: true,
       path: "/api/v1/super-admin/refresh-token",
     });
+    console.log("hey");
 
+    let sendMail = await sendMessage(
+      "shubhampatel@appslure.com",
+      "this is otp varification",
+      `<h1>903493</h1>`
+    );
+
+    if (sendMail && sendMail) {
+      console.log("yep");
+    }
     return res.status(200).json({
       sucess: true,
       data: { message: "login successfully", token: accessToken },
     });
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
       .json({ sucess: false, data: { message: "Internal server error" } });

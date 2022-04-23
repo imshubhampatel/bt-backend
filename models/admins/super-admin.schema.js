@@ -27,6 +27,11 @@ const superAdminSchema = new mongoose.Schema(
       type: String,
       default: "000000",
     },
+    varifiedOtp: {
+      type: String,
+      default: "pending",
+      enum: ["pending", "approved"],
+    },
     encry_password: {
       type: String,
       required: true,
