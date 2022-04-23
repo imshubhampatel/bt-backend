@@ -3,14 +3,47 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { sendMessage } = require("../../methods/sendMessage");
 
-module.exports.adminInfo = (req, res) => {
-  console.log(req.user);
-  return res.status(200).json({ success: true, data: { admin: "me" } });
+//generation otp
+
+// Function to generate OTP
+function generateOTP() {
+  // Declare a digits variable
+  // which stores all digits
+  var digits = "0123456789";
+  let OTP = "";
+  for (let i = 0; i < 6; i++) {
+    OTP += digits[Math.floor(Math.random() * 10)];
+  }
+  return OTP;
+}
+
+module.exports.adminInfo = async (req, res) => {
+  return res
+    .status(200)
+    .json({ success: true, data: { superAdmin: req.user } });
 };
 
-module.exports.verifyOtp = (req, res) => {
+module.exports.verifyOtp = async (req, res) => {
   console.log(req.body);
-  return res.status(200).json({ success: true, data: { admin: "me" } });
+  await SuperAdmin.findById(req.user._id, async (err, superAdmin) => {
+    console.log(superAdmin);
+    if (err) console.log(err);
+    if (!superAdmin) console.log("superadmin not found");
+    if (!(superAdmin.otp === req.body.otp)) {
+      return res
+        .status(403)
+        .json({ success: false, data: { message: "incorrect otp" } });
+    }
+    if (!superAdmin.varifiedEmail) {
+      superAdmin.varifiedEmail = true;
+    }
+    superAdmin.varifiedOtp = "approved";
+    await superAdmin.save();
+    return res.status(200).json({
+      success: true,
+      data: { message: "otp verification successfull" },
+    });
+  });
 };
 
 module.exports.signUp = async (req, res) => {
@@ -42,21 +75,21 @@ module.exports.signUp = async (req, res) => {
       email,
       contact,
     });
-    console.log(superAdmin);
-    superAdmin.otp = 967764;
+    superAdmin.otp = generateOTP();
     await superAdmin.save();
-    console.log(superAdmin);
+    let accessToken = jwt.sign(
+      { _id: superAdmin._id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "1d" }
+    );
     let sendMail = sendMessage(
       email,
       "this is otp varification",
-      `<h3>OTP for account verification is </h3> <h1 style='font-weight:bold;'> 102903 </h1>`
+      `<h3>OTP for account verification is </h3> <h1 style='font-weight:bold;'>${generateOTP()} </h1>`
     );
-    if (sendMail && sendMail) {
-      console.log("yep");
-    }
     return res.status(201).json({
       sucess: true,
-      data: { message: "super admin registered" },
+      data: { message: "super admin registered", token: accessToken },
     });
   } catch (error) {
     console.log(error);
@@ -109,28 +142,33 @@ module.exports.signIn = async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "7d" }
     );
-
     res.cookie("refresh-token", refreshToken, {
       httpOnly: true,
       path: "/api/v1/super-admin/refresh-token",
     });
-    console.log("hey");
+
+    //generating otp
+    let otp = generateOTP();
+    let newAdmin = await SuperAdmin.findOneAndUpdate(
+      { _id: superAdmin._id },
+      { $set: { otp, varifiedOtp: "pending" } },
+      { new: true }
+    );
+
+    //? sending mail to otp
 
     let sendMail = await sendMessage(
       "shubhampatel@appslure.com",
       "this is otp varification",
-      `<h1>903493</h1>`
+      `<h1>${otp}</h1>`
     );
 
-    if (sendMail && sendMail) {
-      console.log("yep");
-    }
     return res.status(200).json({
       sucess: true,
       data: { message: "login successfully", token: accessToken },
     });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     return res
       .status(500)
       .json({ sucess: false, data: { message: "Internal server error" } });

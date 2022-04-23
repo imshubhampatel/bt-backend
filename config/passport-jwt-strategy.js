@@ -30,7 +30,7 @@ passport.use(
     console.log("====> jwtPayload", jwt_payload);
     Admin.findById(jwt_payload._id, function (err, superAdmin) {
       if (err) console.log(err);
-      if (superAdmin) return done(null, superAdmin);
+      if (superAdmin) return done(null, superAdmin._id);
       else {
         return done(null, false);
       }

@@ -9,6 +9,7 @@ const superAdminSchema = new mongoose.Schema(
     userName: {
       type: String,
       required: true,
+      trim: true,
       unique: true,
     },
     contact: {
@@ -18,10 +19,14 @@ const superAdminSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-
+      trim: true,
       required: true,
       unique: true,
       lowercase: true,
+    },
+    varifiedEmail: {
+      type: Boolean,
+      default: false,
     },
     otp: {
       type: String,

@@ -1,7 +1,6 @@
 const nodemailer = require("nodemailer");
 
 let sendMessage = (email, subject, html) => {
-  console.log(process.env.MAIL_SENDER);
   return new Promise((resolve, reject) => {
     let transporter = nodemailer.createTransport({
       service: process.env.SERVICE,

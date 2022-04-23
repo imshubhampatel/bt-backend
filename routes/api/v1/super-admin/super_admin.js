@@ -14,7 +14,7 @@ superAdminRouter.get(
 );
 
 superAdminRouter.post(
-  "/:adminId/otp-varification",
+  "/otp-varification",
   passport.authenticate("super-admin", { session: false }),
   SAcontroller.verifyOtp
 );
