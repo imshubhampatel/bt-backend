@@ -1,17 +1,16 @@
 const nodemailer = require("nodemailer");
 
 let sendMessage = (email, subject, html) => {
+  console.log(process.env.MAIL_SENDER);
   return new Promise((resolve, reject) => {
     let transporter = nodemailer.createTransport({
-      service: "Gmail",
+      service: process.env.SERVICE,
       auth: {
-        type: "OAuth2",
-        user: "shubhampatel2024@gmail.com",
-        clientId:
-          "70959452920-9ue8k9pk2ondee4kracommpd965r142d.apps.googleusercontent.com",
-        clientSecret: "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",
-        refreshToken:
-          "1//04fpbFQuMJi2lCgYIARAAGAQSNwF-L9Irq20EcasGqW3_VNWYH8hZ3i4pkymfsjq-tql_T6pd53ywePpzeggSbLDBKDa2W7TxD8g",
+        type: process.env.TYPE,
+        user: process.env.MAIL_SENDER,
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        refreshToken: process.env.REFRESH_TOKEN,
       },
     });
 
