@@ -10,6 +10,7 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     university: {
       type: mongoose.Schema.Types.ObjectId,
@@ -28,6 +29,7 @@ const adminSchema = new mongoose.Schema(
           },
           marks: {
             type: Number,
+            trim: true,
           },
           marksheet: {
             type: String,
@@ -42,6 +44,7 @@ const adminSchema = new mongoose.Schema(
           },
           marks: {
             type: Number,
+            trim: true,
           },
           marksheet: {
             type: String,
@@ -57,6 +60,7 @@ const adminSchema = new mongoose.Schema(
         },
         collegeCode: {
           type: Number,
+          trim: true,
         },
         degree: {
           type: String,
@@ -70,10 +74,25 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
+    },
+    varifiedEmail: {
+      type: Boolean,
+      default: false,
+    },
+    otp: {
+      type: String,
+      default: "000000",
+    },
+    varifiedOtp: {
+      type: String,
+      default: "pending",
+      enum: ["pending", "approved"],
     },
     aboutAdmin: {
       contact: {
         type: Number,
+        trim: true,
       },
       profileImageUrl: {
         type: String,
@@ -81,6 +100,7 @@ const adminSchema = new mongoose.Schema(
       },
       age: {
         type: Number,
+        trim: true,
       },
       hobbies: {
         type: Array,
@@ -91,6 +111,7 @@ const adminSchema = new mongoose.Schema(
       },
       pincode: {
         type: Number,
+        trim: true,
       },
       city: {
         type: String,
@@ -151,5 +172,5 @@ const adminSchema = new mongoose.Schema(
   }
 );
 
-const SuperAdmin = mongoose.model("SuperAdmin", superAdminSchema);
-module.exports = SuperAdmin;
+const Admin = mongoose.model("Admin", adminSchema);
+module.exports = Admin;
