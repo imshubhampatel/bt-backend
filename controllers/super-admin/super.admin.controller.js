@@ -136,6 +136,7 @@ module.exports.signIn = async (req, res) => {
 
 module.exports.sendOtp = async (req, res) => {
   console.log(req.user);
+  console.log("iser", req.user);
   try {
     //generating otp
     let otp = generateOTP();
@@ -147,12 +148,14 @@ module.exports.sendOtp = async (req, res) => {
     console.log(newAdmin);
 
     //? sending mail to otp
+    console.log("sendMail");
 
     let sendMail = await sendMessage(
       "shubhampatel@appslure.com",
       "this is otp varification",
       `<h1>${otp}</h1>`
     );
+    console.log("sendMail", sendMail);
 
     return res.status(200).json({
       sucess: true,
