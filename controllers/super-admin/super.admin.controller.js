@@ -165,4 +165,25 @@ module.exports.sendOtp = async (req, res) => {
 
 module.exports.verifyOtp = async (req, res) => {
   console.log(req.body);
+
+  try {
+    let superAdmin = await SuperAdmin.findById(req.user._id);
+    if (superAdmin.otp !== req.body.otp) {
+      return res
+        .status(403)
+        .json({ success: false, data: { message: "incorrect otp" } });
+    }
+
+    //? approved
+    superAdmin.varifiedOtp = "approved";
+    superAdmin.save();
+    return res.status(200).json({
+      success: true,
+      data: { message: "Otp Verification was successfull" },
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, data: { message: "Internal server error" } });
+  }
 };
