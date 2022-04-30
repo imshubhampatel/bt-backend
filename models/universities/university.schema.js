@@ -17,7 +17,6 @@ const universitySchema = new mongoose.Schema({
 
   principal: {
     type: String,
-    required: true,
   },
 
   universityAdmin: {

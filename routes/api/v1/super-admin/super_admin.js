@@ -2,7 +2,6 @@ const express = require("express");
 const superAdminRouter = express.Router();
 const { check } = require("express-validator");
 const passport = require("passport");
-// SA = super admin
 const superAdmincontroller = require("../../../../controllers/super-admin/super.admin.controller");
 
 //sign-up

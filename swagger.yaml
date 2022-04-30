@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  description: BTIRT BACKEND - Shubham Patel
+  version: "1.0.1"
+  title: "bt-backend"
+servers:
+  - url: http://localhost:5001/api/v1
+    description: development
+  - url: https://www.weforcode.in/api/v1
+    description: production
+paths:
+  super-admin/sign-up:
+    post:
+      summary: Register super-admins.
+      description: Authorization
+      responses:
+        "201": # status code
+          description: message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: "string"
+                  email:
+                    type: "string"
+                  : type: "string"
+                  password:
+                    type: "string"
+  super-admin/sign-in:
+    post:
+      summary: Login super-admins.
+      description: Authorization
+      responses:
+        "201": # status code
+          description: message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: "string"
+                  email:
+                    type: "string"
+                  : type: "string"
+                  password:
+                    type: "string"

@@ -12,6 +12,12 @@ const passportJwt = require("./config/passport-jwt-strategy");
 const db = require("config/mongoose");
 //?
 
+// documentation
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerDocument = YAML.load("./swagger.yaml");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 app.use(cors());
 
 //? setting up bodyparser

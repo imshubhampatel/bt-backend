@@ -165,23 +165,4 @@ module.exports.sendOtp = async (req, res) => {
 
 module.exports.verifyOtp = async (req, res) => {
   console.log(req.body);
-  await SuperAdmin.findById(req.user._id, async (err, superAdmin) => {
-    console.log(superAdmin);
-    if (err) console.log(err);
-    if (!superAdmin) console.log("superadmin not found");
-    if (!(superAdmin.otp === req.body.otp)) {
-      return res
-        .status(403)
-        .json({ success: false, data: { message: "incorrect otp" } });
-    }
-    if (!superAdmin.varifiedEmail) {
-      superAdmin.varifiedEmail = true;
-    }
-    superAdmin.varifiedOtp = "approved";
-    await superAdmin.save();
-    return res.status(200).json({
-      success: true,
-      data: { message: "otp verification successfull" },
-    });
-  });
 };

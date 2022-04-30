@@ -14,7 +14,6 @@ const adminSchema = new mongoose.Schema(
     },
     university: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "University",
     },
     sport: {
