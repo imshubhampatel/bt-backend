@@ -10,6 +10,8 @@ superAdminRouter.post("/sign-up", superAdmincontroller.signUp);
 //sign-in
 superAdminRouter.post("/sign-in", superAdmincontroller.signIn);
 
+superAdminRouter.get("/refresh-token", superAdmincontroller.refreshToken);
+
 //? send otp
 superAdminRouter.post(
   "/send-otp",

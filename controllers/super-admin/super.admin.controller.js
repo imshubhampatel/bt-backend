@@ -112,12 +112,15 @@ module.exports.signIn = async (req, res) => {
     );
     let refreshToken = jwt.sign(
       { _id: superAdmin._id },
-      process.env.ACCESS_TOKEN_SECRET,
+      process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "7d" }
     );
+
     res.cookie("refresh-token", refreshToken, {
-      httpOnly: true,
+      sameSite: "strict",
       path: "/api/v1/super-admin/refresh-token",
+      httpOnly: true,
+      secure: true,
     });
 
     return res.status(200).json({
@@ -188,5 +191,48 @@ module.exports.verifyOtp = async (req, res) => {
     res
       .status(500)
       .json({ success: false, data: { message: "Internal server error" } });
+  }
+};
+
+module.exports.refreshToken = async (req, res) => {
+  try {
+    const rf_Token = await req.cookies["refresh-token"];
+    if (!rf_Token) {
+      return res.status(401).json({
+        data: { success: false, message: "Please Login or Sign Up first" },
+      });
+    }
+    if (rf_Token) {
+      jwt.verify(
+        rf_Token,
+        process.env.REFRESH_TOKEN_SECRET,
+        async (err, user) => {
+          if (err) {
+            return res.status(401).json({
+              success: false,
+              data: {
+                message: "Error Please Login or Sign Up first",
+              },
+            });
+          }
+          if (user) {
+            const accessToken = await jwt.sign(
+              { _id: user._id },
+              process.env.ACCESS_TOKEN_SECRET,
+              { expiresIn: "1d" }
+            );
+            return res.status(200).json({
+              success: true,
+              data: {
+                message: "data fetched",
+                token: accessToken,
+              },
+            });
+          }
+        }
+      );
+    }
+  } catch (error) {
+    return res.status(404).send(error);
   }
 };
