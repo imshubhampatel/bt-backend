@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const SuperAdmin = require("../../models/admins/super-admin.schema");
 const Admin = require("../../models/admins/admin.schema");
-const { sendMessage } = require("../../methods/sendMessage");
+const { sendMessage } = require("../../services/nodemailer/sendMessage");
 
 function generatePassword(name = "shubham") {
   let str = name.split("");

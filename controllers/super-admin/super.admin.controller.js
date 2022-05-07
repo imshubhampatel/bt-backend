@@ -1,7 +1,7 @@
 const SuperAdmin = require("../../models/admins/super-admin.schema");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { sendMessage } = require("../../methods/sendMessage");
+const { sendMessage } = require("../../services/nodemailer/sendMessage");
 
 // Function to generate OTP
 function generateOTP() {
@@ -155,11 +155,66 @@ module.exports.sendOtp = async (req, res) => {
 
     let sendMail = await sendMessage(
       "shubhampatel@appslure.com",
-      "this is otp varification",
-      `<h1>${otp}</h1>`
+      "[BTIRT] Please verify your login",
+      `<div
+      style="
+        font-family: Helvetica, Arial, sans-serif;
+        min-width: 1000px;
+        overflow: auto;
+        line-height: 2;
+      "
+    >
+      <div style="margin: 50px auto; width: 70%; padding: 20px 0">
+        <div style="border-bottom: 1px solid #eee">
+          <a
+            href=""
+            style="
+              font-size: 1.4em;
+              color: #e52b50;
+              text-decoration: none;
+              font-weight: 600;
+            "
+            >Babulal tarabai institute of research and technology</a
+          >
+        </div>
+        <p style="font-size: 1.1em">Hey ${newAdmin.name},</p>
+        <p>
+          Thank you for login  Btirt Dashboard. Use the following OTP to complete your
+          Sign-in procedures. OTP is valid for 5 minutes.
+        </p>
+        <h2
+          style="
+            background: #e52b50;
+            margin: 0 auto;
+            width: max-content;
+            padding: 0 10px;
+            color: #fff;
+            border-radius: 4px;
+          "
+        >
+          ${otp}
+        </h2>
+        <p style="font-size: 0.9em">Regards,<br />Your Brand</p>
+        <hr style="border: none; border-top: 1px solid #eee" />
+        <div
+          style="
+            float: right;
+            padding: 8px 0;
+            color: #aaa;
+            font-size: 0.8em;
+            line-height: 1;
+            font-weight: 300;
+          "
+        >
+          <p>Your BTRIT Inc</p>
+          <p> Sironja, Sagar</p>
+          <p>Madhya Pradesh, India</p>
+        </div>
+      </div>
+    </div>
+    `
     );
     console.log("sendMail", sendMail);
-
     return res.status(200).json({
       sucess: true,
       data: { message: "OTP sent successfully" },
@@ -234,5 +289,22 @@ module.exports.refreshToken = async (req, res) => {
     }
   } catch (error) {
     return res.status(404).send(error);
+  }
+};
+
+module.exports.logout = async (req, res) => {
+  try {
+    res.clearCookie("refresh-token", {
+      path: "/api/v1/super-admin/refresh-token",
+    });
+
+    return res
+      .status(200)
+      .json({ sucess: true, data: { message: "Logged out successfully" } });
+  } catch (error) {
+    return res.status(500).json({
+      sucess: false,
+      data: { message: "Internal server error", error: error.message },
+    });
   }
 };

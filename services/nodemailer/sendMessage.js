@@ -14,7 +14,7 @@ let sendMessage = (email, subject, html) => {
     });
 
     let mailOptions = {
-      from: `BTIRT COLLGE MANAGEMENT SYSTEM 🎫 <shubhampatel2024@gmail.com>`,
+      from: `Team Join Btirt 🎫 <shubhampatel2024@gmail.com>`,
       to: email,
       subject: subject,
       html: html,
