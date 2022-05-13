@@ -125,7 +125,10 @@ module.exports.signIn = async (req, res) => {
 
     return res.status(200).json({
       sucess: true,
-      data: { message: "login successfully", token: accessToken },
+      data: {
+        message: "login successfully",
+        token: accessToken,
+      },
     });
   } catch (error) {
     console.log(error.message);
@@ -155,7 +158,7 @@ module.exports.sendOtp = async (req, res) => {
 
     let sendMail = await sendMessage(
       "shubhampatel@appslure.com",
-      "[BTIRT] Please verify your login",
+      "[BTIRT] Please Verify Your Dashbaord Login",
       `<div
       style="
         font-family: Helvetica, Arial, sans-serif;
