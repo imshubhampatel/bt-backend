@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.use(
   "/",
-  // passport.authenticate("super-admin", { session: false }),
+  passport.authenticate("super-admin", { session: false }),
   require("./news.js")
 );
 

@@ -39,9 +39,11 @@ module.exports.createNews = async (req, res) => {
 module.exports.getAllNews = async (req, res) => {
   try {
     let allNews = await News.find({});
-    return res
-      .status(200)
-      .json({ success: true, data: { message: "data fetched", allNews } });
+    setTimeout(() => {
+      return res
+        .status(200)
+        .json({ success: true, data: { message: "data fetched", allNews } });
+    }, 2000);
   } catch (err) {
     return res.status(500).json({
       success: false,
