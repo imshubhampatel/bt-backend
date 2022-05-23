@@ -108,7 +108,7 @@ module.exports.signIn = async (req, res) => {
     let accessToken = jwt.sign(
       { _id: superAdmin._id },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "10M" }
     );
     let refreshToken = jwt.sign(
       { _id: superAdmin._id },
