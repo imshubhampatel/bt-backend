@@ -9,5 +9,4 @@ router.use("/user", require("./user"));
 router.use("/admin", require("./admin"));
 router.use("/sub-admin", require("./sub-admin"));
 router.use("/super-admin", require("./super-admin"));
-
 module.exports = router;

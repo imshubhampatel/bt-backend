@@ -12,7 +12,14 @@ const passportJwt = require("./config/passport-jwt-strategy");
 const db = require("config/mongoose");
 //?
 
-app.use(cors());
+let corsConfig = {
+  origin: ["https://btirthorizon.in", "http://localhost:3000"],
+  credentials: true,
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "PUT,GET,POST,DELETE,PATCH",
+};
+
+app.use(cors(corsConfig));
 
 //? setting up bodyparser
 app.use(cookieParser());
