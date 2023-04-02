@@ -9,6 +9,7 @@ const paymentSchema = new mongoose.Schema(
     orderId: {
       type: String,
       required: true,
+      unique: true,
     },
     txnAmount: {
       type: String,
@@ -20,10 +21,20 @@ const paymentSchema = new mongoose.Schema(
     txnId: {
       type: String,
       required: true,
+      unique: true,
     },
     uniqueCode: {
       type: String,
       required: true,
+    },
+    event: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Event",
+    },
+    type: {
+      type: String,
+      default: "REGISTRATION",
+      enum: ["REGISTRATION", "EVENT"],
     },
   },
   {

@@ -8,4 +8,5 @@ userRouter.get(
   passport.authenticate("user", { session: false }),
   userController.getUserById
 );
+
 module.exports = userRouter;

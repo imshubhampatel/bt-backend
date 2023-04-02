@@ -83,7 +83,8 @@ async function capturePayment(req, res) {
 
 async function updateTransaction(req, res) {
   console.log({ body: req.body });
-  const { uniqueCode, ORDERID, TXNAMOUNT, TXNID, STATUS } = req.body;
+  const { uniqueCode, event, ORDERID, TXNAMOUNT, TXNID, STATUS, type } =
+    req.body;
   try {
     const user = await User.findOneAndUpdate(uniqueCode, {
       paymentStatus: "COMPLETED",
@@ -96,6 +97,8 @@ async function updateTransaction(req, res) {
       txnAmount: TXNAMOUNT,
       txnStatus: STATUS,
       txnId: TXNID,
+      type: type,
+      event: event,
     });
 
     return res.status(200).json(paymentDetails);
