@@ -30,6 +30,8 @@
     "nodemailer": "^6.7.3",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
+    "razorpay": "^2.8.6",
+    "request": "^2.88.2",
     "swagger-ui-express": "^4.3.0",
     "yamljs": "^0.3.0"
   }
