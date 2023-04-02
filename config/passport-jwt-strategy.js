@@ -4,6 +4,7 @@ const ExtractJwt = require("passport-jwt").ExtractJwt;
 
 const SuperAdmin = require("../models/admins/super-admin.schema");
 const Admin = require("../models/admins/admin.schema");
+const User = require("../models/users/user.schema");
 
 let opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
@@ -24,12 +25,25 @@ passport.use(
 );
 
 passport.use(
+  "user",
+  new JwtStrategy(opts, function (jwt_payload, done) {
+    console.log("====> jwtPayload", jwt_payload);
+    User.findById(jwt_payload._id, function (err, user) {
+      if (err) console.log(err);
+      if (user) return done(null, user._id);
+      else {
+        return done(null, false);
+      }
+    });
+  })
+);
+passport.use(
   "admin",
   new JwtStrategy(opts, function (jwt_payload, done) {
     console.log("====> jwtPayload", jwt_payload);
-    Admin.findById(jwt_payload._id, function (err, superAdmin) {
+    Admin.findById(jwt_payload._id, function (err, admin) {
       if (err) console.log(err);
-      if (superAdmin) return done(null, superAdmin._id);
+      if (admin) return done(null, admin._id);
       else {
         return done(null, false);
       }
