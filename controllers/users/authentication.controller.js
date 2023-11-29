@@ -1,7 +1,7 @@
 const User = require("../../models/users/user.schema");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
+const { sendMessage } = require("../../services/nodemailer/sendMessage");
 module.exports.signUp = async (req, res) => {
   console.log(req.body);
   try {
@@ -125,7 +125,7 @@ module.exports.signIn = async (req, res) => {
     `1`;
     res.cookie("refresh-token", refreshToken, {
       sameSite: "strict",
-      path: "/api/v1/users/refresh-token",
+      path: "/api/v1/user/authentication/refresh-token",
       httpOnly: true,
       secure: true,
     });
@@ -192,7 +192,7 @@ module.exports.refreshToken = async (req, res) => {
 module.exports.logout = async (req, res) => {
   try {
     res.clearCookie("refresh-token", {
-      path: "/api/v1/users/refresh-token",
+      path: "/api/v1/users/authentication/refresh-token",
     });
 
     return res
@@ -203,5 +203,130 @@ module.exports.logout = async (req, res) => {
       sucess: false,
       data: { message: "Internal server error", error: error.message },
     });
+  }
+};
+
+// Function to generate OTP
+function generateOTP() {
+  var digits = "0123456789";
+  let OTP = "";
+  for (let i = 0; i < 6; i++) {
+    OTP += digits[Math.floor(Math.random() * 10)];
+  }
+  return OTP;
+}
+
+// send otp
+
+module.exports.sendOtp = async (req, res) => {
+  console.log(req.user);
+  console.log("iser", req.user);
+  try {
+    //generating otp
+    let otp = generateOTP();
+    let newUser = await User.findOneAndUpdate(
+      { _id: req.user._id },
+      { $set: { oneTimePassword: otp, isOtpVerified: "PENDING" } },
+      { new: true }
+    );
+    console.log({ newUser });
+
+    //? sending mail to otp
+    console.log("sendMail");
+
+    let sendMail = await sendMessage(
+      "shubhampatel2024@gmail.com",
+      "[BTIRT] Please Verify Your Dashbaord Login",
+      `<div
+      style="
+        font-family: Helvetica, Arial, sans-serif;
+        min-width: 1000px;
+        overflow: auto;
+        line-height: 2;
+      "
+    >
+      <div style="margin: 50px auto; width: 70%; padding: 20px 0">
+        <div style="border-bottom: 1px solid #eee">
+          <a
+            href=""
+            style="
+              font-size: 1.4em;
+              color: #e52b50;
+              text-decoration: none;
+              font-weight: 600;
+            "
+            >Babulal tarabai institute of research and technology</a
+          >
+        </div>
+        <p style="font-size: 1.1em">Hey ${newUser.name},</p>
+        <p>
+          Thank you for login  Btirt Dashboard. Use the following OTP to complete your
+          Sign-in procedures. OTP is valid for 5 minutes.
+        </p>
+        <h2
+          style="
+            background: #e52b50;
+            margin: 0 auto;
+            width: max-content;
+            padding: 0 10px;
+            color: #fff;
+            border-radius: 4px;
+          "
+        >
+          ${otp}
+        </h2>
+        <p style="font-size: 0.9em">Regards,<br />Your Brand</p>
+        <hr style="border: none; border-top: 1px solid #eee" />
+        <div
+          style="
+            float: right;
+            padding: 8px 0;
+            color: #aaa;
+            font-size: 0.8em;
+            line-height: 1;
+            font-weight: 300;
+          "
+        >
+          <p>Your BTRIT Inc</p>
+          <p> Sironja, Sagar</p>
+          <p>Madhya Pradesh, India</p>
+        </div>
+      </div>
+    </div>
+    `
+    );
+    console.log("sendMail", sendMail);
+    return res.status(200).json({
+      sucess: true,
+      data: { message: "OTP sent successfully" },
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+module.exports.verifyOtp = async (req, res) => {
+  console.log("bpd", req.body);
+  console.log(req.user);
+
+  try {
+    let user = await User.findById(req.user._id);
+    if (user.oneTimePassword !== Number(req.body.otp)) {
+      return res
+        .status(403)
+        .json({ success: false, data: { message: "incorrect otp" } });
+    }
+
+    //? approved
+    user.isOtpVerified = "APPROVED";
+    user.save();
+    return res.status(200).json({
+      success: true,
+      data: { message: "Otp Verification was successfull" },
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, data: { message: "Internal server error" } });
   }
 };

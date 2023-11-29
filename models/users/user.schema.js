@@ -67,6 +67,13 @@ const userSchema = new mongoose.Schema(
       trim: true,
       required: [true, "Password is Required for User"],
     },
+    oneTimePassword: {
+      type: Number,
+    },
+    isOtpVerified: {
+      type: String,
+      enum: ["PENDING", "APPROVED"],
+    },
   },
 
   {

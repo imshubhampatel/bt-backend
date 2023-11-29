@@ -27,10 +27,10 @@ passport.use(
 passport.use(
   "user",
   new JwtStrategy(opts, function (jwt_payload, done) {
-    console.log("====> jwtPayload", jwt_payload);
+    console.log("====> jwtPayload user", jwt_payload);
     User.findById(jwt_payload._id, function (err, user) {
       if (err) console.log(err);
-      if (user) return done(null, user._id);
+      if (user) return done(null, user);
       else {
         return done(null, false);
       }
